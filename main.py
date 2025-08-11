@@ -107,7 +107,7 @@ if st.session_state.get('authentication_status'):
                     }],
                     text={
                         "verbosity": "low"
-                    }
+                    },
                     include=["output[*].file_search_call.search_results"]
                 )
         except:
