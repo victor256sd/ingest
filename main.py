@@ -98,8 +98,7 @@ if st.session_state.get('authentication_status'):
         try:
             with st.spinner('Searching...'):
                 response2 = client2.responses.create(
-                    instructions = INSTRUCTION,
-                    input = query,
+                    input = f"{INSTRUCTION}\n\n{query}",
                     model = model,
                     tools = [{
                                 "type": "file_search",
