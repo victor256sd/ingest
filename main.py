@@ -98,8 +98,8 @@ if st.session_state.get('authentication_status'):
         try:
             with st.spinner('Searching...'):
                 response2 = client2.responses.create(
-                    input = f"{INSTRUCTION}\n\n{query}",
                     model = model,
+                    input = f"{INSTRUCTION}\n\n{query}",
                     tools = [{
                                 "type": "file_search",
                                 "vector_store_ids": [VECTOR_STORE_ID],
