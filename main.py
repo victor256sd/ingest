@@ -123,7 +123,7 @@ if st.session_state.get('authentication_status'):
         # Write response to the answer column.    
         # with answer_col:
         if model == "gpt-5-nano":
-              cleaned_response = re.sub(r'.*?', '', response2.final_output)
+              cleaned_response = re.sub(r'.*?', '', response2.output_text)
         else:
             # For o4-mini try, otherwise except.
             try:
