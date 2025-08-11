@@ -110,7 +110,7 @@ if st.session_state.get('authentication_status'):
                     reasoning={
                         "effort": "minimal"
                     },
-                    include=["output[*].file_search_call.search_results"]
+                    # include=["output[*].file_search_call.search_results"]
                 )
         except:
             with st.spinner('Searching...'):
