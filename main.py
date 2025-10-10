@@ -75,8 +75,9 @@ if st.session_state.get('authentication_status'):
     openai_api_key = os.environ.get("OPENAI_API_KEY", None)
 
     # Retrieve user-selected openai model.
-    model: str = st.selectbox("Model", options=MODEL_LIST)
-        
+    # model: str = st.selectbox("Model", options=MODEL_LIST)
+    model = "gpt-4.1-mini"
+    
     # If there's no openai api key, stop.
     if not openai_api_key:
         st.error("Please enter your OpenAI API key!")
