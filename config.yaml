@@ -4,10 +4,10 @@ credentials:
       email: victor@aberration.com
       name: Victor
       password: $2b$12$.ejUPQtRJR9cLgZd.e7fUeBpUFf5gXT/9RwXsZNCKhvWuT96wsywK
-    chad:
-      email: chad@aberration.com
-      name: Chad
-      password: $2b$12$whLpnrx98K5FpXPZb8TBf.9C.tu0tWimRPc3vRW2L9ZRE6YSrERcO
+    cast:
+      email: cast@aberration.com
+      name: CAST
+      password: $2b$12$CLfitmDmXIANSN3kp9AZg.5HYZgjQ2CoiQyEBLR3URbi7TIYDsV62
 cookie:
   expiry_days: 30
   key: ingestai_signature_key # Must be string
