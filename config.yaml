@@ -8,6 +8,10 @@ credentials:
       email: cast@aberration.com
       name: CAST
       password: $2b$12$CLfitmDmXIANSN3kp9AZg.5HYZgjQ2CoiQyEBLR3URbi7TIYDsV62
+    demo:
+      email: demo@aberration.com
+      name: Demo
+      password: $2b$12$I01d9IablWiEk7DnQ8W3D.RXMVwZE92oLjG/b4o/rDj5PqiD7lnd6
 cookie:
   expiry_days: 30
   key: ingestai_signature_key # Must be string
