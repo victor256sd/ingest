@@ -277,63 +277,32 @@ if st.session_state.get('authentication_status'):
     
     # Primary broad query
     PRIMARY_QUERY = """
-    (
         "cell site analysis" OR
         "cell-site analysis" OR
         "cell site location information" OR
-        "cell-site location information" OR
         CSLI OR
         "cell tower records" OR
-        "cell tower data" OR
         "cell phone location data" OR
-        "phone location data" OR
-        "cell phone tracking"
-    )
-    AND
-    (
-        court OR
-        trial OR
-        police OR
-        crime OR
-        criminal OR
-        investigation OR
-        evidence OR
-        warrant
-    )
-    NOT
-    (
-        biology OR
-        biological OR
-        cancer OR
-        genomic OR
-        protein OR
-        tumor OR
-        "single-cell"
-    )
+        "phone location data"
     """
     
     # Fallback queries if the broad search doesn't return enough relevant results
     FALLBACK_QUERIES = [
-        '"cell site analysis" AND court NOT biology NOT cancer',
-        '"cell-site analysis" AND trial NOT biology NOT cancer',
-        '"cell site location information" AND warrant',
-        '"cell-site location information" AND court',
-        'CSLI AND court NOT biology NOT cancer',
-        'CSLI AND warrant NOT biology NOT cancer',
-        'CSLI AND "criminal case"',
-        '"cell tower records" AND police',
-        '"cell tower records" AND murder',
-        '"cell tower data" AND homicide',
-        '"cell phone location data" AND evidence',
-        '"phone location data" AND investigation',
-        '"cell phone tracking" AND crime',
-        '"cellphone tracking" AND police',
-        '"mobile phone tracking" AND investigation',
-        '"digital evidence" AND "cell phone tracking"',
-        '"location evidence" AND "cell phone"',
-        '"forensic cell site analysis"',
-        '"cellular analysis" AND forensic AND court NOT biology NOT cancer',
-        '"cellular analysis" AND crime AND evidence NOT biology NOT cancer',
+        '"cell site analysis" court',
+        '"cell-site analysis" court',
+        '"cell site location information" court',
+        '"cell site location information" warrant',
+        'CSLI court',
+        'CSLI warrant',
+        '"cell tower records" police',
+        '"cell tower records" murder',
+        '"cell tower data" investigation',
+        '"cell phone location data" evidence',
+        '"phone location data" criminal case',
+        '"cell phone tracking" crime',
+        '"cellphone tracking" police',
+        '"mobile phone tracking" investigation',
+        '"digital evidence" "cell phone"',
     ]
 
     try:
