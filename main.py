@@ -12,7 +12,174 @@ from yaml.loader import SafeLoader
 from pathlib import Path
 from cryptography.fernet import Fernet
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
+# Disable the button called via on_click attribute.
+def disable_button():
+    st.session_state.disabled = True        
+
+def search_everything(query: str, page_size: int = 100) -> List:
+    # Execute a NewsAPI Everything search.
+    params = {
+        "q": query,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": page_size,
+        "apiKey": NEWS_API_KEY,
+    }
+
+    response = requests.get(
+        NEWS_API_URL,
+        params=params,
+        timeout=30,
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    if data.get("status") != "ok":
+        raise RuntimeError(f"NewsAPI Error: {data}")
+
+    return data.get("articles", [])
+
+def deduplicate_articles(articles: List[Dict]) -> List:
+    # Deduplicate by URL.
+    seen_urls = set()
+    unique_articles = []
+
+    for article in articles:
+        url = article.get("url")
+
+        if not url:
+            continue
+
+        if url in seen_urls:
+            continue
+
+        seen_urls.add(url)
+        unique_articles.append(article)
+
+    return unique_articles
+
+def parse_date(article: Dict) -> datetime:
+    # Parse NewsAPI publishedAt field.
+    published = article.get("publishedAt")
+
+    if not published:
+        return datetime.min.replace(tzinfo=None)
+
+    try:
+        return datetime.fromisoformat(
+            published.replace("Z", "+00:00")
+        )
+    except Exception:
+        return datetime.min.replace(tzinfo=None)
+
+def execute_primary_search() -> List:
+    # Run the broad query.
+    print("Running primary search...")
+
+    articles = search_everything(PRIMARY_QUERY)
+
+    print(f"Primary search returned {len(articles)} articles")
+
+    return articles
+
+def execute_fallback_searches() -> List:
+    # Run targeted searches if primary search is too sparse.
+    print("Running fallback searches...")
+
+    articles = []
+
+    for query in FALLBACK_QUERIES:
+        try:
+            print(f"Searching: {query}")
+            results = search_everything(query, page_size=50)
+            articles.extend(results)
+
+        except Exception as e:
+            print(f"Error with query {query}: {e}")
+
+    print(f"Fallback searches returned {len(articles)} raw articles")
+
+    return articles
+
+def build_news_feed(final_count: int, threshold: int) -> List:
+    # Strategy:
+    # 1. Run one comprehensive query.
+    # 2. Deduplicate.
+    # 3. If fewer than threshold articles,
+    #    execute targeted fallback searches.
+    # 4. Deduplicate again.
+    # 5. Sort newest first.
+    # 6. Return top N.
+    articles = execute_primary_search()
+    articles = deduplicate_articles(articles)
+
+    print(
+        f"Unique articles after primary search: {len(articles)}"
+    )
+
+    if len(articles) < threshold:
+
+        print(
+            f"Only {len(articles)} articles found. "
+            f"Threshold is {threshold}. "
+            f"Using fallback searches."
+        )
+
+        fallback_articles = execute_fallback_searches()
+        articles.extend(fallback_articles)
+        articles = deduplicate_articles(articles)
+
+        print(
+            f"Unique articles after fallback: {len(articles)}"
+        )
+
+    articles.sort(
+        key=parse_date,
+        reverse=True
+    )
+    return articles[:final_count]
+
+def print_results(results: List[Dict]):
+    st.sidebar.markdown("## School Litigation News")
+
+    for index, article in enumerate(results, start=1):
+        description = article.get("description", "")
+        st.sidebar.markdown(
+            f"""
+            **{index}. {article.get('title')}**<br>
+            **Source:** {article.get('source', {}).get('name', 'Unknown')}  
+            **Published:** {format_published_date(article.get('publishedAt'))}<br> 
+            **URL:** {article.get('url')}  
+            **Summary:** {description}
+            """, unsafe_allow_html=True)
+
+# Make user-friendly date/time from News API date/time.
+def format_published_date(date_str):
+
+    if not date_str:
+        return "Unknown"
+
+    try:
+        # Convert UTC string from NewsAPI
+        utc_dt = datetime.fromisoformat(
+            date_str.replace("Z", "+00:00")
+        )
+
+        # Convert to local timezone
+        local_dt = utc_dt.astimezone(
+            ZoneInfo("America/Los_Angeles")
+        )
+
+        return local_dt.strftime(
+            "%B %d, %Y, %I:%M %p %Z"
+        )
+
+    except Exception:
+        return date_str
 # Disable the button called via on_click attribute.
 def disable_button():
     st.session_state.disabled = True        
