@@ -248,7 +248,7 @@ if st.session_state.get('authentication_status'):
     INSTRUCTION = f.decrypt(INSTRUCTION_ENCRYPTED).decode()
 
     # Set page layout and title.
-    st.set_page_config(page_title="Ingest AI", page_icon=":space_invader:", layout="wide")
+    st.set_page_config(page_title="Ingest AI", page_icon=":space_invader:", layout="wide", initial_sidebar_state="collapsed")
     st.header(":space_invader: Ingest AI")
     st.markdown("*This AI-powered chatbot retrieves relevant documentation to answer questions about program features, configuration, workflows, mapping tools, and analysis functions. It can also assist users with the program’s built-in expression language by helping draft, explain, and debug expressions based on documented syntax and functions. The chatbot provides users with concise, accurate, and context-aware guidance while reducing the need to search through lengthy documentation or contact support for common usage questions.*")
     
