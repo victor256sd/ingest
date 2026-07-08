@@ -146,7 +146,7 @@ def build_news_feed(final_count: int, threshold: int) -> List:
     return articles[:final_count]
 
 def print_results(results: List[Dict]):
-    st.sidebar.markdown("## School Litigation News")
+    st.sidebar.markdown("## Cellular Analysis News")
 
     for index, article in enumerate(results, start=1):
         description = article.get("description", "")
@@ -261,6 +261,135 @@ if st.session_state.get('authentication_status'):
     if not openai_api_key:
         st.error("Please enter your OpenAI API key!")
         st.stop()
+
+    #--------------------------------------------------
+    # Setup sidebar.
+    #--------------------------------------------------
+    NEWS_API_URL = "https://newsapi.org/v2/everything"
+
+    # Minimum number of articles we want before using fallback searches
+    MIN_ARTICLE_THRESHOLD = 10
+    
+    # Final number of results to return
+    FINAL_RESULT_COUNT = 10
+    
+    # Primary broad query
+    PRIMARY_QUERY = """
+    (
+        "cell phone tracking" OR
+        "cellphone tracking" OR
+        "mobile phone tracking" OR
+        "phone location data" OR
+        "cell phone location data" OR
+        "cellphone location data" OR
+        "cell site analysis" OR
+        "cell-site analysis" OR
+        "cell site location information" OR
+        "cell-site location information" OR
+        CSLI OR
+        "cell tower data" OR
+        "cell tower records" OR
+        "cell phone records" OR
+        "cellphone records" OR
+        "cellular analysis" OR
+        "mobile device location"
+    )
+    AND
+    (
+        crime OR
+        criminal OR
+        police OR
+        detective OR
+        investigation OR
+        investigators OR
+        suspect OR
+        murder OR
+        homicide OR
+        kidnapping OR
+        robbery OR
+        arrest OR
+        charged OR
+        convicted OR
+        trial OR
+        court OR
+        lawsuit OR
+        warrant OR
+        evidence OR
+        prosecution OR
+        defense OR
+        "court case" OR
+        "criminal case" OR
+        "solve crimes" OR
+        "solved the case" OR
+        "helped solve" OR
+        "location evidence" OR
+        "digital evidence" OR
+        "forensic analysis"
+    )
+    NOT
+    (
+        biology OR
+        biological OR
+        biomedical OR
+        cancer OR
+        stem OR
+        gene OR
+        genomic OR
+        genome OR
+        protein OR
+        proteins OR
+        tissue OR
+        tumor OR
+        tumors OR
+        laboratory OR
+        "cell biology" OR
+        "cellular biology" OR
+        "single-cell" OR
+        "single cell" OR
+        "cellular metabolism" OR
+        "cellular therapy" OR
+        "cellular immune" OR
+        "cellular immunity" OR
+        "cellular imaging"
+    )
+    """
+    
+    # Fallback queries if the broad search doesn't return enough relevant results
+    FALLBACK_QUERIES = [
+        '"cell phone tracking" AND crime',
+        '"cellphone tracking" AND crime',
+        '"mobile phone tracking" AND police',
+        '"phone location data" AND investigation',
+        '"cell phone location data" AND court',
+        '"cellphone location data" AND evidence',
+        '"cell site analysis" AND court',
+        '"cell-site analysis" AND court',
+        '"cell site analysis" AND trial',
+        '"cell site analysis" AND criminal',
+        '"cell-site location information" AND warrant',
+        '"cell site location information" AND evidence',
+        'CSLI AND court',
+        'CSLI AND warrant',
+        'CSLI AND "criminal case"',
+        '"cell tower data" AND murder',
+        '"cell tower records" AND police',
+        '"cell tower records" AND prosecution',
+        '"cell phone records" AND homicide',
+        '"cellphone records" AND investigation',
+        '"cellular analysis" AND forensic AND court',
+        '"cellular analysis" AND crime AND evidence',
+        '"mobile device location" AND criminal',
+        '"location data" AND "court case" AND phone',
+        '"digital evidence" AND "cell phone tracking"',
+    ]
+
+    try:
+        results = build_news_feed(final_count=10, threshold=10)
+        print_results(results)
+    except Exception as e:
+        st.sidebar.markdown("*Unable to fetch news.*")
+
+    #--------------------------------------------------
     
     # Create new form to search aitam library vector store.    
     with st.form(key="qa_form", clear_on_submit=False):
