@@ -12,6 +12,8 @@ from yaml.loader import SafeLoader
 from pathlib import Path
 from cryptography.fernet import Fernet
 import re
+import requests
+from typing import List, Dict
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
