@@ -182,6 +182,7 @@ def format_published_date(date_str):
 
     except Exception:
         return date_str
+        
 # Disable the button called via on_click attribute.
 def disable_button():
     st.session_state.disabled = True        
@@ -276,111 +277,62 @@ if st.session_state.get('authentication_status'):
     # Primary broad query
     PRIMARY_QUERY = """
     (
-        "cell phone tracking" OR
-        "cellphone tracking" OR
-        "mobile phone tracking" OR
-        "phone location data" OR
-        "cell phone location data" OR
-        "cellphone location data" OR
         "cell site analysis" OR
         "cell-site analysis" OR
         "cell site location information" OR
         "cell-site location information" OR
         CSLI OR
-        "cell tower data" OR
         "cell tower records" OR
-        "cell phone records" OR
-        "cellphone records" OR
-        "cellular analysis" OR
-        "mobile device location"
+        "cell tower data" OR
+        "cell phone location data" OR
+        "phone location data" OR
+        "cell phone tracking"
     )
     AND
     (
+        court OR
+        trial OR
+        police OR
         crime OR
         criminal OR
-        police OR
-        detective OR
         investigation OR
-        investigators OR
-        suspect OR
-        murder OR
-        homicide OR
-        kidnapping OR
-        robbery OR
-        arrest OR
-        charged OR
-        convicted OR
-        trial OR
-        court OR
-        lawsuit OR
-        warrant OR
         evidence OR
-        prosecution OR
-        defense OR
-        "court case" OR
-        "criminal case" OR
-        "solve crimes" OR
-        "solved the case" OR
-        "helped solve" OR
-        "location evidence" OR
-        "digital evidence" OR
-        "forensic analysis"
+        warrant
     )
     NOT
     (
         biology OR
         biological OR
-        biomedical OR
         cancer OR
-        stem OR
-        gene OR
         genomic OR
-        genome OR
         protein OR
-        proteins OR
-        tissue OR
         tumor OR
-        tumors OR
-        laboratory OR
-        "cell biology" OR
-        "cellular biology" OR
-        "single-cell" OR
-        "single cell" OR
-        "cellular metabolism" OR
-        "cellular therapy" OR
-        "cellular immune" OR
-        "cellular immunity" OR
-        "cellular imaging"
+        "single-cell"
     )
     """
     
     # Fallback queries if the broad search doesn't return enough relevant results
     FALLBACK_QUERIES = [
-        '"cell phone tracking" AND crime',
-        '"cellphone tracking" AND crime',
-        '"mobile phone tracking" AND police',
-        '"phone location data" AND investigation',
-        '"cell phone location data" AND court',
-        '"cellphone location data" AND evidence',
-        '"cell site analysis" AND court',
-        '"cell-site analysis" AND court',
-        '"cell site analysis" AND trial',
-        '"cell site analysis" AND criminal',
-        '"cell-site location information" AND warrant',
-        '"cell site location information" AND evidence',
-        'CSLI AND court',
-        'CSLI AND warrant',
+        '"cell site analysis" AND court NOT biology NOT cancer',
+        '"cell-site analysis" AND trial NOT biology NOT cancer',
+        '"cell site location information" AND warrant',
+        '"cell-site location information" AND court',
+        'CSLI AND court NOT biology NOT cancer',
+        'CSLI AND warrant NOT biology NOT cancer',
         'CSLI AND "criminal case"',
-        '"cell tower data" AND murder',
         '"cell tower records" AND police',
-        '"cell tower records" AND prosecution',
-        '"cell phone records" AND homicide',
-        '"cellphone records" AND investigation',
-        '"cellular analysis" AND forensic AND court',
-        '"cellular analysis" AND crime AND evidence',
-        '"mobile device location" AND criminal',
-        '"location data" AND "court case" AND phone',
+        '"cell tower records" AND murder',
+        '"cell tower data" AND homicide',
+        '"cell phone location data" AND evidence',
+        '"phone location data" AND investigation',
+        '"cell phone tracking" AND crime',
+        '"cellphone tracking" AND police',
+        '"mobile phone tracking" AND investigation',
         '"digital evidence" AND "cell phone tracking"',
+        '"location evidence" AND "cell phone"',
+        '"forensic cell site analysis"',
+        '"cellular analysis" AND forensic AND court NOT biology NOT cancer',
+        '"cellular analysis" AND crime AND evidence NOT biology NOT cancer',
     ]
 
     try:
