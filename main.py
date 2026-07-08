@@ -359,7 +359,7 @@ if st.session_state.get('authentication_status'):
                                 "type": "file_search",
                                 "vector_store_ids": [VECTOR_STORE_ID],
                     }],
-                    include=["output[*].file_search_call.search_results"]
+                    include=["file_search_call.results"]
                 )
         # Write response to the answer column.    
         # with answer_col:
