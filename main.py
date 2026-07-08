@@ -1,4 +1,4 @@
-# Copyright (c) 2025 victor256sd
+# Copyright (c) 2026 victor256sd
 # All rights reserved.
 
 import streamlit as st
