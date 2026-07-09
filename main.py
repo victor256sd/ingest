@@ -16,6 +16,7 @@ import requests
 from typing import List, Dict
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from st_copy import copy_button
 
 # Disable the button called via on_click attribute.
 def disable_button():
@@ -265,6 +266,10 @@ if st.session_state.get('authentication_status'):
         st.error("Please enter your OpenAI API key!")
         st.stop()
 
+    # Initialize state once
+    if "cleaned_response" not in st.session_state:
+        st.session_state.cleaned_response = None
+        
     #--------------------------------------------------
     # Setup sidebar.
     #--------------------------------------------------
@@ -373,6 +378,30 @@ if st.session_state.get('authentication_status'):
                 cleaned_response = re.sub(r'【.*?†.*?】', '', response2.output[1].content[0].text)
         st.markdown("#### Response")
         st.markdown(cleaned_response)
+
+        # Persist response across refreshes/reruns
+        st.session_state.cleaned_response = cleaned_response
+
+        # Add a small copy icon button
+        copy_button(
+            text=cleaned_response,
+            tooltip="Copy this text",
+            copied_label="Copied!",
+            icon="st",
+        )
+
+    if st.session_state.cleaned_response:
+        st.markdown("#### Response")
+        st.markdown(st.session_state.cleaned_response)
+        
+        # Add a small copy icon button
+        copy_button(
+            text=st.session_state.cleaned_response,
+            tooltip="Copy this text",
+            copied_label="Copied!",
+            icon="st",
+        )
+
         # # Write files used to generate the answer.
         # with sources_col:
         #     if model != "o4-mini":
