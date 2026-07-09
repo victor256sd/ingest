@@ -389,7 +389,7 @@ if st.session_state.get('authentication_status'):
             copied_label="Copied!",
             icon="st",
         )
-
+        
     if st.session_state.cleaned_response:
         st.markdown("#### Response")
         st.markdown(st.session_state.cleaned_response)
